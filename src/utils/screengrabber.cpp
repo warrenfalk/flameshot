@@ -31,7 +31,11 @@ void ScreenGrabber::generalGrimScreenshot(bool& ok, QPixmap& res)
 #ifdef USE_WAYLAND_GRIM
 #if defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
     QProcess Process;
-    QString program = "grim";
+    #ifdef WAYLAND_GRIM_PATH
+        QString program = WAYLAND_GRIM_PATH;
+    #else
+        QString program = "grim";
+    #endif
     QStringList arguments;
     arguments << "-";
     Process.start(program, arguments);
@@ -141,13 +145,15 @@ QPixmap ScreenGrabber::grabEntireDesktop(bool& ok)
                   "activate the grim-based general wayland screenshot adapter");
                 freeDesktopPortal(ok, res);
 #else
-                AbstractLogger::warning()
-                  << tr("grim's screenshot component is implemented based on "
-                        "wlroots, it may not be used in GNOME or similar "
-                        "desktop environments");
                 generalGrimScreenshot(ok, res);
+                // resize the grim screenshot to account for possible fractional pixel ratios
+                QString fdprEnv = qEnvironmentVariable("FORCE_DEVICE_PIXEL_RATIO");
+                double fdpr = fdprEnv.isEmpty() ? 0 : fdprEnv.toDouble();
+                int desktopHeight = QGuiApplication::primaryScreen()->availableVirtualSize().height();
+                double dpr = fdpr > 0 ? fdpr : res.height() / (double)(desktopHeight);
+                res.setDevicePixelRatio(dpr);
+                return res;
 #endif
-                break;
             }
             default:
                 ok = false;

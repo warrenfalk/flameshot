@@ -228,6 +228,9 @@ endif()
 
 if (USE_WAYLAND_GRIM)
     target_compile_definitions(flameshot PRIVATE USE_WAYLAND_GRIM=1)
+    if (USE_WAYLAND_GRIM_PATH)
+        target_compile_definitions(flameshot PRIVATE WAYLAND_GRIM_PATH="${USE_WAYLAND_GRIM_PATH}")
+    endif()
 endif()
 
 if (APPLE)

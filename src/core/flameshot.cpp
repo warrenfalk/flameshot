@@ -125,7 +125,10 @@ CaptureWidget* Flameshot::gui(const CaptureRequest& req)
         m_captureWindow->activateWindow();
         m_captureWindow->raise();
 #else
-        m_captureWindow->showFullScreen();
+        //m_captureWindow->setWindowFlags(
+        //  Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+        m_captureWindow->show();
+
 //        m_captureWindow->show(); // For CaptureWidget Debugging under Linux
 #endif
         return m_captureWindow;
