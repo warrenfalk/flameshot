@@ -141,13 +141,13 @@ QPixmap ScreenGrabber::grabEntireDesktop(bool& ok)
                   "activate the grim-based general wayland screenshot adapter");
                 freeDesktopPortal(ok, res);
 #else
-                AbstractLogger::warning()
-                  << tr("grim's screenshot component is implemented based on "
-                        "wlroots, it may not be used in GNOME or similar "
-                        "desktop environments");
                 generalGrimScreenshot(ok, res);
+                // resize the grim screenshot to account for possible fractional pixel ratios
+                QScreen* screen = QGuiAppCurrentScreen().currentScreen();
+                QSize vsize = screen->virtualSize();
+                QPixmap scaled = res.scaled(vsize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                return scaled;
 #endif
-                break;
             }
             default:
                 ok = false;
