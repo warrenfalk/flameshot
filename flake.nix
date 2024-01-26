@@ -10,13 +10,11 @@
       with import nixpkgs { system = "x86_64-linux"; };
       stdenv.mkDerivation {
         name = "flameshot";
+        version = "warrenfalk";
         src = self;
         nativeBuildInputs = [
-          #pkg-config
-
           cmake
           qt5.wrapQtAppsHook
-          #libsForQt5.qt5.qmake
         ];
         cmakeFlags = [
           "-DUSE_WAYLAND_GRIM=true"
@@ -25,15 +23,7 @@
           ## put the real dependencies here
           qt5.full
           libsForQt5.qt5.qtwayland
-
-          # libsamplerate
-          # libsndfile
-          # fftw
         ];
-        #buildPhase = "make -j $NIX_BUILD_CORES"
-        shellHook = ''
-          export PS1="(devenv) $PS1"
-        '';
       };
 
   };
